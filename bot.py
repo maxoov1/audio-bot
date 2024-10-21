@@ -13,6 +13,7 @@ import database
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_BOT_ADMIN_USER_ID = int(os.getenv("TELEGRAM_BOT_ADMIN_USER_ID", 0))
+TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME")
 
 dispatcher = Dispatcher()
 
@@ -59,7 +60,7 @@ async def audio_message_handler(message: Message) -> None:
   generated_id = generate_unique_id()
 
   database.query_create_audio(generated_id, message.audio.file_id)
-  await message.reply(f"https://t.me/vxm_dev_bot?start={generated_id}")
+  await message.reply(f"https://t.me/{TELEGRAM_BOT_USERNAME}?start={generated_id}")
 
 
 async def main() -> None:
