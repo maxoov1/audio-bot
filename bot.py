@@ -16,10 +16,6 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if TELEGRAM_BOT_TOKEN is None:
   sys.exit("TELEGRAM_BOT_TOKEN is not set")
 
-TELEGRAM_BOT_ADMIN_USER_ID = int(os.getenv("TELEGRAM_BOT_ADMIN_USER_ID", 0))
-if TELEGRAM_BOT_ADMIN_USER_ID == 0:
-  sys.exit("TELEGRAM_BOT_ADMIN_USER_ID is not set")
-
 TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME")
 if TELEGRAM_BOT_USERNAME is None:
   sys.exit("TELEGRAM_BOT_USERNAME is not set")
@@ -48,7 +44,8 @@ async def start_command_handler(message: Message) -> None:
 
 @dispatcher.message(Command("remove"))
 async def remove_command_handler(message: Message) -> None:
-  if message.from_user.id != TELEGRAM_BOT_ADMIN_USER_ID:
+  admins_user_ids = database.query_get_admins()
+  if message.from_user.id not in admins_user_ids:
     return
 
   arguments = get_command_arguments(message.text)
@@ -63,7 +60,8 @@ async def remove_command_handler(message: Message) -> None:
 
 @dispatcher.message()
 async def audio_message_handler(message: Message) -> None:
-  if message.from_user.id != TELEGRAM_BOT_ADMIN_USER_ID or not message.audio:
+  admins_user_ids = database.query_get_admins()
+  if message.from_user.id not in admins_user_ids or not message.audio:
     return
 
   generated_id = generate_unique_id()

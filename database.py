@@ -19,6 +19,15 @@ def row_factory(cursor: sqlite3.Cursor, row) -> dict:
   return {key: value for key, value in zip(fields, row)}
 
 
+def query_get_admins() -> list[int]:
+  with __database_context() as connection:
+    query_result = connection.execute(
+      "SELECT user_id FROM admin",
+    ).fetchall()
+
+    return [result["user_id"] for result in query_result]
+
+
 def query_get_audio(generated_id: str) -> dict:
   with __database_context() as connection:
     query_result = connection.execute(
