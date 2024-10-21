@@ -1,6 +1,7 @@
 import asyncio
 import secrets
 import os
+import sys
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -12,8 +13,16 @@ import database
 
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+if TELEGRAM_BOT_TOKEN is None:
+  sys.exit("TELEGRAM_BOT_TOKEN is not set")
+
 TELEGRAM_BOT_ADMIN_USER_ID = int(os.getenv("TELEGRAM_BOT_ADMIN_USER_ID", 0))
+if TELEGRAM_BOT_ADMIN_USER_ID == 0:
+  sys.exit("TELEGRAM_BOT_ADMIN_USER_ID is not set")
+
 TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME")
+if TELEGRAM_BOT_USERNAME is None:
+  sys.exit("TELEGRAM_BOT_USERNAME is not set")
 
 dispatcher = Dispatcher()
 
