@@ -9,8 +9,8 @@ def __database_context():
 
   try:
     yield connection
-  finally:
     connection.commit()
+  finally:
     connection.close()
 
 
