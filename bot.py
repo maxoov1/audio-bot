@@ -38,7 +38,7 @@ async def start_command_handler(message: Message) -> None:
 
 
 @dispatcher.message(Command("remove"))
-async def delete_command_handler(message: Message) -> None:
+async def remove_command_handler(message: Message) -> None:
   if message.from_user.id != TELEGRAM_BOT_ADMIN_USER_ID:
     return
 
