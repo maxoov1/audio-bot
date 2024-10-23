@@ -42,12 +42,14 @@ def query_get_audio(generated_id: str) -> dict:
     return query_result
 
 
-def query_remove_audio(generated_id: str) -> None:
+def query_remove_audio(generated_id: str) -> bool:
   with __database_context() as connection:
-    connection.execute(
+    query_result = connection.execute(
       "DELETE FROM audio WHERE generated_id = ?",
       [generated_id],
     )
+
+    return query_result.rowcount > 0
 
 
 def query_create_audio(generated_id: str, telegram_file_id: str) -> None:

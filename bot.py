@@ -51,8 +51,8 @@ async def remove_command_handler(message: Message) -> None:
 
   generated_id = arguments[0]
 
-  database.query_remove_audio(generated_id)
-  await message.reply(f"removed {generated_id}")
+  if database.query_remove_audio(generated_id):
+    await message.reply(f"removed {generated_id}")
 
 
 @dispatcher.message()
