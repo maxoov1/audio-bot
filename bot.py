@@ -8,6 +8,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message
+from aiogram.utils.deep_linking import create_start_link
 
 import database
 
@@ -15,10 +16,6 @@ import database
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if TELEGRAM_BOT_TOKEN is None:
   sys.exit("TELEGRAM_BOT_TOKEN is not set")
-
-TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME")
-if TELEGRAM_BOT_USERNAME is None:
-  sys.exit("TELEGRAM_BOT_USERNAME is not set")
 
 dispatcher = Dispatcher()
 
@@ -67,7 +64,9 @@ async def audio_message_handler(message: Message) -> None:
   generated_id = generate_unique_id()
 
   database.query_create_audio(generated_id, message.audio.file_id)
-  await message.reply(f"https://t.me/{TELEGRAM_BOT_USERNAME}?start={generated_id}")
+  await message.reply(
+    await create_start_link(message.bot, generated_id),
+  )
 
 
 async def main() -> None:
