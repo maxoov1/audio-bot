@@ -1,4 +1,6 @@
 from contextlib import contextmanager
+
+import logging
 import sqlite3
 
 
@@ -10,6 +12,8 @@ def __database_context():
   try:
     yield connection
     connection.commit()
+  except sqlite3.Error as e:
+    logging.error(e)
   finally:
     connection.close()
 
