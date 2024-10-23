@@ -28,6 +28,11 @@ def get_command_arguments(text: str) -> list[str]:
   return text.split()[1:]
 
 
+def is_admin(user_id: int) -> bool:
+  admins_user_ids = database.query_get_admins()
+  return admins_user_ids and user_id in admins_user_ids
+
+
 @dispatcher.message(Command("start", "get"))
 async def start_command_handler(message: Message) -> None:
   arguments = get_command_arguments(message.text)
@@ -41,8 +46,7 @@ async def start_command_handler(message: Message) -> None:
 
 @dispatcher.message(Command("remove"))
 async def remove_command_handler(message: Message) -> None:
-  admins_user_ids = database.query_get_admins()
-  if message.from_user.id not in admins_user_ids:
+  if not is_admin(message.from_user.id):
     return
 
   arguments = get_command_arguments(message.text)
@@ -57,8 +61,7 @@ async def remove_command_handler(message: Message) -> None:
 
 @dispatcher.message()
 async def audio_message_handler(message: Message) -> None:
-  admins_user_ids = database.query_get_admins()
-  if message.from_user.id not in admins_user_ids or not message.audio:
+  if not is_admin(message.from_user.id) or not message.audio:
     return
 
   generated_id = generate_unique_id()
