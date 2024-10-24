@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 import secrets
 import sys
@@ -12,6 +13,9 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TELEGRAM_BOT_TOKEN:
     sys.exit("TELEGRAM_BOT_TOKEN is not set")
 
+logging.basicConfig(
+    level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 dispatcher = aiogram.Dispatcher()
 
 

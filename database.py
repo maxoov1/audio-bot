@@ -4,6 +4,9 @@ import logging
 import sqlite3
 
 
+logger = logging.getLogger(__name__)
+
+
 @contextmanager
 def __database_context(database: str = "database.sqlite"):
     connection = sqlite3.connect(database)
@@ -12,7 +15,7 @@ def __database_context(database: str = "database.sqlite"):
         yield connection
         connection.commit()
     except sqlite3.Error as e:
-        logging.error(e)
+        logger.error(e)
     finally:
         connection.close()
 
