@@ -5,8 +5,8 @@ import sqlite3
 
 
 @contextmanager
-def __database_context():
-    connection = sqlite3.connect("database.sqlite")
+def __database_context(database: str = "database.sqlite"):
+    connection = sqlite3.connect(database)
     connection.row_factory = sqlite3.Row
     try:
         yield connection
