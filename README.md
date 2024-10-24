@@ -4,9 +4,9 @@ Bot
 
 ## Migrations
 
-Use [`goose`](https://pressly.github.io/goose/) for database migrations
+Use [`yoyo`](https://ollycope.com/software/yoyo/latest/) for database migrations
 ```sh
-goose -dir ./migrations sqlite3 ./database.sqlite up
+yoyo apply --database sqlite:///database.sqlite migrations/
 ```
 
 ## Configuration
