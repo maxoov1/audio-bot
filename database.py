@@ -26,6 +26,21 @@ def query_get_admins() -> list[int] | None:
         return [result["user_id"] for result in query_result]
 
 
+def query_remove_admin(user_id: int) -> bool | None:
+    with __database_context() as connection:
+        query_result = connection.execute(
+            "DELETE FROM admin WHERE user_id = ?", [user_id]
+        )
+
+        return query_result.rowcount > 0
+
+
+def query_create_admin(user_id: int) -> bool | None:
+    with __database_context() as connection:
+        connection.execute("INSERT INTO admin (user_id) VALUES (?)", [user_id])
+        return True
+
+
 def query_get_audio(generated_id: str) -> dict | None:
     with __database_context() as connection:
         query_result = connection.execute(
@@ -43,10 +58,12 @@ def query_remove_audio(generated_id: str) -> bool | None:
         return query_result.rowcount > 0
 
 
-def query_create_audio(generated_id: str, telegram_file_id: str) -> bool | None:
+def query_create_audio(
+    generated_id: str, telegram_file_id: str, added_by_user_id: int
+) -> bool | None:
     with __database_context() as connection:
         connection.execute(
-            "INSERT INTO audio (generated_id, telegram_file_id) VALUES (?, ?)",
-            [generated_id, telegram_file_id],
+            "INSERT INTO audio (generated_id, telegram_file_id, added_by) VALUES (?, ?, ?)",
+            [generated_id, telegram_file_id, added_by_user_id],
         )
         return True

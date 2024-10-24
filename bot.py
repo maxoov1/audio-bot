@@ -31,11 +31,41 @@ def get_command_arguments(text: str, start: int = 1) -> list[str]:
     return text.split()[start:]
 
 
+def is_super_admin(user_id: int) -> bool:
+    return user_id == TELEGRAM_SUPER_ADMIN_USER_ID
+
+
 def is_admin(user_id: int) -> bool:
     admins_user_ids = database.query_get_admins()
-    return user_id == TELEGRAM_SUPER_ADMIN_USER_ID or (
-        admins_user_ids and user_id in admins_user_ids
-    )
+    return is_super_admin(user_id) or (admins_user_ids and user_id in admins_user_ids)
+
+
+@dispatcher.message(aiogram.filters.Command("removeadmin"))
+async def remove_admin_command_handler(message: aiogram.types.Message) -> None:
+    if not is_super_admin(message.from_user.id):
+        return
+
+    arguments = get_command_arguments(message.text)
+    if len(arguments) < 1:
+        return
+
+    user_id = arguments[0]
+    if database.query_remove_admin(user_id):
+        await message.reply(f"successfully removed {user_id} as admin")
+
+
+@dispatcher.message(aiogram.filters.Command("addadmin"))
+async def add_admin_command_handler(message: aiogram.types.Message) -> None:
+    if not is_super_admin(message.from_user.id):
+        return
+
+    arguments = get_command_arguments(message.text)
+    if len(arguments) < 1:
+        return
+
+    user_id = arguments[0]
+    if database.query_create_admin(user_id):
+        await message.reply(f"successfully added {user_id} as admin")
 
 
 @dispatcher.message(aiogram.filters.Command("start", "get"))
@@ -69,7 +99,9 @@ async def audio_message_handler(message: aiogram.types.Message) -> None:
 
     generated_id = generate_unique_id()
     link = await aiogram.utils.deep_linking.create_start_link(message.bot, generated_id)
-    if database.query_create_audio(generated_id, message.audio.file_id):
+    if database.query_create_audio(
+        generated_id, message.audio.file_id, message.from_user.id
+    ):
         await message.reply(link)
 
 
