@@ -6,55 +6,55 @@ import sqlite3
 
 @contextmanager
 def __database_context():
-  connection = sqlite3.connect("database.sqlite")
-  connection.row_factory = row_factory
+    connection = sqlite3.connect("database.sqlite")
+    connection.row_factory = __row_factory
 
-  try:
-    yield connection
-    connection.commit()
-  except sqlite3.Error as e:
-    logging.error(e)
-  finally:
-    connection.close()
+    try:
+        yield connection
+        connection.commit()
+    except sqlite3.Error as e:
+        logging.error(e)
+    finally:
+        connection.close()
 
 
-def row_factory(cursor: sqlite3.Cursor, row) -> dict:
-  fields = [column[0] for column in cursor.description]
-  return {key: value for key, value in zip(fields, row)}
+def __row_factory(cursor: sqlite3.Cursor, row) -> dict:
+    fields = [column[0] for column in cursor.description]
+    return {key: value for key, value in zip(fields, row)}
 
 
 def query_get_admins() -> list[int]:
-  with __database_context() as connection:
-    query_result = connection.execute(
-      "SELECT user_id FROM admin",
-    ).fetchall()
+    with __database_context() as connection:
+        query_result = connection.execute(
+            "SELECT user_id FROM admin",
+        ).fetchall()
 
-    return [result["user_id"] for result in query_result]
+        return [result["user_id"] for result in query_result]
 
 
 def query_get_audio(generated_id: str) -> dict:
-  with __database_context() as connection:
-    query_result = connection.execute(
-      "SELECT generated_id, telegram_file_id FROM audio WHERE generated_id = ?",
-      [generated_id],
-    ).fetchone()
+    with __database_context() as connection:
+        query_result = connection.execute(
+            "SELECT generated_id, telegram_file_id FROM audio WHERE generated_id = ?",
+            [generated_id],
+        ).fetchone()
 
-    return query_result
+        return query_result
 
 
 def query_remove_audio(generated_id: str) -> bool:
-  with __database_context() as connection:
-    query_result = connection.execute(
-      "DELETE FROM audio WHERE generated_id = ?",
-      [generated_id],
-    )
+    with __database_context() as connection:
+        query_result = connection.execute(
+            "DELETE FROM audio WHERE generated_id = ?",
+            [generated_id],
+        )
 
-    return query_result.rowcount > 0
+        return query_result.rowcount > 0
 
 
 def query_create_audio(generated_id: str, telegram_file_id: str) -> None:
-  with __database_context() as connection:
-    connection.execute(
-      "INSERT INTO audio (generated_id, telegram_file_id) VALUES (?, ?)",
-      [generated_id, telegram_file_id],
-    )
+    with __database_context() as connection:
+        connection.execute(
+            "INSERT INTO audio (generated_id, telegram_file_id) VALUES (?, ?)",
+            [generated_id, telegram_file_id],
+        )
