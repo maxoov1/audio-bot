@@ -13,6 +13,10 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TELEGRAM_BOT_TOKEN:
     sys.exit("TELEGRAM_BOT_TOKEN is not set")
 
+TELEGRAM_SUPER_ADMIN_USER_ID = int(os.getenv("TELEGRAM_SUPER_ADMIN_USER_ID", 0))
+if not TELEGRAM_SUPER_ADMIN_USER_ID:
+    sys.exit("TELEGRAM_SUPER_ADMIN_USER_ID is not set")
+
 logging.basicConfig(
     level=logging.WARNING, format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -29,7 +33,9 @@ def get_command_arguments(text: str, start: int = 1) -> list[str]:
 
 def is_admin(user_id: int) -> bool:
     admins_user_ids = database.query_get_admins()
-    return admins_user_ids and user_id in admins_user_ids
+    return user_id == TELEGRAM_SUPER_ADMIN_USER_ID or (
+        admins_user_ids and user_id in admins_user_ids
+    )
 
 
 @dispatcher.message(aiogram.filters.Command("start", "get"))

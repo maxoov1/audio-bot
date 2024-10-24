@@ -13,4 +13,5 @@ yoyo apply --database sqlite:///database.sqlite migrations/
 
 ```sh
 TELEGRAM_BOT_TOKEN = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+TELEGRAM_SUPER_ADMIN_USER_ID = "123456789"
 ```
