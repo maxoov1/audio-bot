@@ -20,6 +20,6 @@ TELEGRAM_SUPER_ADMIN_USER_ID = "123456789"
 
 ### Docker
 ```sh
-docker build -t audio-bot:latest .
-docker run -e TELEGRAM_BOT_TOKEN="" -e TELEGRAM_SUPER_ADMIN_USER_ID="" audio-bot:latest
+docker pull ghcr.io/maxoov1/audio-bot:main # or build image yourself
+docker run -e TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" -e TELEGRAM_SUPER_ADMIN_USER_ID="123456789" ghcr.io/maxoov1/audio-bot:main
 ```
